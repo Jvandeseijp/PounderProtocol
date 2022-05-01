@@ -1,0 +1,125 @@
+
+.font-lato{
+  font-family: 'Lato', sans-serif;
+}
+
+body{
+  font-family: 'Lato', sans-serif;
+
+}
+
+
+span[data-text] {
+  display:inline-block;
+  /* font-size:70px; */
+  font-weight:bold;
+  font-family:arial;
+  position:relative;
+  /* margin:10px; */
+  letter-spacing: 2px;
+}
+span[data-text]:before {
+  content:attr(data-text);
+  /* text-shadow: 0 2px 20px purple; */
+  background: linear-gradient(to bottom, #6760CF 0%, #00CAA4 100%);
+  -webkit-text-stroke: 5px transparent;    
+  -webkit-background-clip: text;
+  background-clip: text;
+  color:transparent;
+}
+span[data-text]:after {
+  content:attr(data-text);
+  left:0;
+  top:0;
+  position:absolute;
+  background-image: linear-gradient(275deg, #6760CF 0%, #00CAA4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  /* color: transparent; */
+}
+
+@font-face {
+font-family: 'apercubold';
+src: url('/public/fonts/fontsfree-net-apercubold-webfont.woff') format('woff'),
+     url('/public/fonts/fontsfree-net-apercubold-webfont.woff2') format('woff2');
+font-weight: normal;
+font-style: normal;
+}
+.font-apercubold{
+font-family: 'apercubold';
+}
+.customShadow-HIW{
+box-shadow: 0 0 20px rgb(0 0 0 / 10%);
+}
+.container{
+max-width: 1170px;
+}
+.accordion__button{
+  background: linear-gradient(90deg, #992BD4 0%, #00CAA4 99.94%, #00CAA4 100.01%);
+  color: white;
+  border-radius: 10px;
+  position: relative;
+  padding-right: 30px;
+}
+.accordion__item .accordion__button{
+  color: white;
+}
+.accordion__item + .accordion__item{
+  border-top: none !important;
+  margin: 10px 0;
+}
+.accordion__item .accordion__button:before{
+  
+  right: 0;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+}
+.accordion__item .accordion__button[aria-expanded='true']::before, .accordion__item .accordion__button[aria-selected='true']::before {
+  transform: rotate(-135deg);
+}
+
+
+.price-slider .rc-slider-rail {
+  height: 12px;
+  border-radius: 20px;
+  border:1px solid #fff;
+}
+.price-slider .rc-slider-track{
+  height: 12px ;
+  border-radius: 12px 0 0 12px ;
+  background: linear-gradient(90deg, rgb(153, 43, 212) 0%, rgb(0, 202, 164) 99.94%, rgb(0, 202, 164) 100.01%)!important;
+}
+.price-slider .rc-slider-handle{
+  width: 25px ;
+  height: 25px ;
+  background: #000 ;
+  border:1px solid #fff;
+  opacity:1;
+
+}
+.rc-tooltip .rc-tooltip-inner{
+  background: transparent;
+  font-weight: 600;
+  font-size:15px;
+  opacity:1;
+  box-shadow:none;
+  padding: 8px 0px;
+  margin-left: -14px;
+}
+.rs-slider .rs-tooltip{
+  display:flex !important;
+  top: -25px !important;
+  left: -25px !important;
+
+}
+.rc-tooltip-arrow{
+  display:none!important;
+}
+.rc-tooltip.rc-tooltip-placement-top, .rc-tooltip.rc-tooltip-placement-topLeft, .rc-tooltip.rc-tooltip-placement-topRight {
+  padding: 5px 0 0px 0;
+}
+.rc-slider.price-slider{
+  padding:0px;
+  border:1px solid #fff;
+}
