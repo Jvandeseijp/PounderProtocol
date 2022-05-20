@@ -217,9 +217,9 @@ function DashboardTab() {
       const contract = new ethers.Contract(CONTRACT_ADDRESS,CONTRACT_ABI, provider);
       const supply = await contract.totalSupply();
       const nextRebase = await contract.nextRebase();
-      let num = nextRebase['_hex'];
-      console.log(typeof num);
-      setRebase(nextRebase);
+      let num = parseInt(nextRebase['_hex'], 16);
+      
+      setRebase(num);
       setTotalSupply(ethers.utils.formatEther(supply));
 
     }
@@ -256,7 +256,11 @@ function DashboardTab() {
               </div>
               <div>
                 <h1 className="text-xl font-thin">Next Rebase</h1>
-                <p className="font-bold text-lg">{now}</p>
+                {rebase-now < 0? 
+                <p>00:00</p>
+                :
+                <p className="font-bold text-lg"> {Math.floor((rebase-now)/60)} : {(rebase-now)-(Math.floor((rebase-now)/60)*60)}</p>
+                }
               </div>
               <div>
                 <h1 className="text-xl font-thin">Circulating Supply</h1>
