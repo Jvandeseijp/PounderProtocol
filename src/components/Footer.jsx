@@ -24,10 +24,7 @@ function Footer() {
                 <div className="w-40">Circulating supply:</div>
                 <div>T.B.A.</div>
               </div>
-              <div className="flex text-white">
-                <div className="w-40">Total Burned:</div>
-                <div>0</div>
-              </div>
+              
               <div className="flex text-white">
                 <div className="w-40">Market Cap:</div>
                 <div>T.B.A.</div>
@@ -55,7 +52,7 @@ function Footer() {
               </div>
               <div>
                 <a
-                  href="#"
+                  href="https://pancakeswap.finance/swap?outputCurrency=0xbC6246f22f5D6A883E5acCB69016655e1744393C"
                   target="_blank"
                   className="text-white hover:text-white text-base leading-normal opacity-90"
                 >
@@ -108,7 +105,7 @@ function Footer() {
               </div>
               <div className="pt-1">
                 <a
-                  href="#"
+                  href="https://pancakeswap.finance/swap?outputCurrency=0xbC6246f22f5D6A883E5acCB69016655e1744393C"
                   target="_blank"
                   className="text-white hover:text-white hover:no-underline text-sm font-medium rounded-full hover:scale-105 transition transform duration-500 px-5 py-3 mt-4 border-white border white mx-auto inline-block text-center"
                   style={{

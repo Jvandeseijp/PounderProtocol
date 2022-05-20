@@ -6,10 +6,12 @@ import Referral from "./pages/Referral";
 import Swap from "./pages/Swap";
 import { ethers } from "ethers";
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from './utils/contractConfig';
+import { useMoralis} from 'react-moralis';
 
 // import Docs from "./pages/Docs";
 
 function Dashboard() {
+
 	let location = useLocation();
 	let navigate = useNavigate();
   const [openTab, setOpenTab] = useState(1);
@@ -56,12 +58,23 @@ function Dashboard() {
 }
 
 const Tabs = ({ color, openTab, setOpenTab, handleTabClick }) => {
+
+  const {
+    account,
+    authenticate,
+  } = useMoralis();
+
+  const handleAuth = async() => {
+        
+      authenticate({signingMessage:"Welcome to PounderProtocol", chainId: 56});
+
+  }
   return (
     <>
       <div className="flex flex-wrap">
         <div className="w-full">
           <ul
-            className="max-w-3xl mx-auto flex mb-0 list-none overflow-auto pt-3 pb-4 px-3 flex-row justify-between md:px-10"
+            className="max-w-3xl mx-auto flex mb-0 list-none  pt-3 pb-4 px-3 flex-row justify-between md:px-10"
             role="tablist"
           >
             <li className="-mb-px mr-2 last:mr-0 min-w-[150px] text-center">
@@ -114,40 +127,42 @@ const Tabs = ({ color, openTab, setOpenTab, handleTabClick }) => {
               >
                 Calculator
               </button>
-            </li>
-            {/* <li className="-mb-px mr-2 last:mr-0 min-w-[150px] text-center">
-              <button
-                className={
-                  "text-xs font-bold uppercase px-5 py-3 shadow-lg rounded-full border border-white border-opacity-50 block leading-normal w-full " +
-                  (openTab === 4 ? "text-white " + color : "text-white")
-                }
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleTabClick("earn");
-                }}
-                data-toggle="tab"
-                // href="#link4"
-                role="tablist"
-              >
-                Earn
-              </button>
-            </li> */}
+              </li>           
+           
             <li className="-mb-px mr-2 last:mr-0 min-w-[150px] text-center">
               <a href="https://pounder-protocol.gitbook.io/docs/" target="_blank"
                 className={
                   "hover:text-white hover:no-underline text-xs font-bold uppercase px-5 py-3 shadow-lg rounded-full border border-white border-opacity-50 block leading-normal w-full " +
                   (openTab === 5 ? "text-white " + color : "text-white")
                 }
-                // onClick={(e) => {
-                //   e.preventDefault();
-                //   handleTabClick("docs");
-                // }}
+              
                 data-toggle="tab"
                 // href="#link5"
                 role="tablist"
               >
                 Docs
               </a>
+            </li>
+            <li className="-mb-px mr-2 last:mr-0 min-w-[150px] text-center">
+              <button
+               onClick={handleAuth}
+               style = {{
+                 border: 'none',
+                 paddingRight: 13,
+                 paddingLeft: 13,
+                 paddingTop: 8,
+                 paddingBottom: 8,
+                 marginLeft: 8,
+                 borderRadius: 8,
+                 background: 'white',
+                 color: 'black',
+
+               }
+               }
+
+               >{account?
+                account.substring(0,6) + '...' + account.substring(account.length-3,account.length) 
+                : 'Connect Wallet'}</button>
             </li>
           </ul>
           <div className="relative flex flex-col min-w-0 w-full">
@@ -182,15 +197,29 @@ const Tabs = ({ color, openTab, setOpenTab, handleTabClick }) => {
 
 function DashboardTab() {
 
+  const [now, setNow] = useState(0);
   const [totalSupply, setTotalSupply] = useState(0);
+  const [rebase, setRebase] = useState(0);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(Math.floor(Date.now()/1000))
+     
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  
   
   useEffect(() =>{
     async function getTotalSupply() {
       const provider = new ethers.providers.JsonRpcProvider('https://speedy-nodes-nyc.moralis.io/fd883a5568037e2a20cb09de/bsc/mainnet');
       const contract = new ethers.Contract(CONTRACT_ADDRESS,CONTRACT_ABI, provider);
       const supply = await contract.totalSupply();
-      console.log(supply);
-      console.log(ethers.utils.formatEther(supply))
+      const nextRebase = await contract.nextRebase();
+      let num = nextRebase['_hex'];
+      console.log(typeof num);
+      setRebase(nextRebase);
       setTotalSupply(ethers.utils.formatEther(supply));
 
     }
@@ -227,7 +256,7 @@ function DashboardTab() {
               </div>
               <div>
                 <h1 className="text-xl font-thin">Next Rebase</h1>
-                <p className="font-bold text-lg">00 : 30 : 00</p>
+                <p className="font-bold text-lg">{now}</p>
               </div>
               <div>
                 <h1 className="text-xl font-thin">Circulating Supply</h1>
@@ -263,10 +292,7 @@ function DashboardTab() {
                   <p className="font-thin">Sell Tax</p>
                   <p>18%</p>
                 </div>
-                <div className="justify-between flex mb-1">
-                  <p className="font-thin">Transfer Tax</p>
-                  <p>13%</p>
-                </div>
+                
                 {/* <div className="mb-1">
                   <p className="font-thin"></p>
                   <p>869.23B $POUND</p>

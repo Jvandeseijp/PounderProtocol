@@ -131,8 +131,9 @@ function Home() {
                   The Best Auto-Staking and Auto-Compounding Protocol in Crypto
                 </h1>
                 <p className="mt-6 mb-10 max-w-md">
-                  Simply Hold $POUND and watch the tokens grow in your wallet,
-                  Thanks to Our Unique Cylinder Stake and Burn Algorithm.
+                  Simply Hold $POUND and watch the tokens grow in your wallet.
+                  Thanks to Our Unique Rebase Algorithm.
+
                 </p>
                 <div className="inline-flex md:w-auto w-full">
                   <a
@@ -142,11 +143,11 @@ function Home() {
                         "linear-gradient(90deg, #992BD4 0%, #00CAA4 99.94%, #00CAA4 100.01%)",
                     }}
                     // onClick={() => setShowModal(true)}
-                    href="#"
-                    target="_blank"
+                    href="https://pancakeswap.finance/swap?outputCurrency=0xbC6246f22f5D6A883E5acCB69016655e1744393C"
+                    // target="_blank"
                     
                   >
-                    <span>PancakeSwap</span>
+                    <span>BUY $POUND</span>
                   </a>
 
                   <a
@@ -158,66 +159,7 @@ function Home() {
                     Join Discord
                   </a>
                 </div>
-               
-                <div>
-                  <div
-                    id="countdown"
-                    className="lg:max-w-[384px] max-w-full p-1 rounded-full border border-white flex justify-center items-center mt-5"
-                    style={{
-                      background:
-                        "linear-gradient(90deg, #992BD4 0%, #00CAA4 99.94%, #00CAA4 100.01%)",
-                    }}
-                  >
-                    <ul className="flex m-0 p-0">
-                      <li className="px-2 text-center min-w-[70px] text-sm">
-                        <h2
-                          className="text-3xl font-bold text-center"
-                          id="days"
-                        >
-                          {releaseTimer.days || 0}
-                        </h2>
-                        Day
-                      </li>
-                      <li className="text-center">
-                        <h2 className="text-3xl font-bold text-center">:</h2>
-                      </li>
-                      <li className="px-2 text-center min-w-[70px] text-sm">
-                        <h2
-                          className="text-3xl font-bold text-center"
-                          id="hours"
-                        >
-                          {releaseTimer.hours || 0}
-                        </h2>
-                        Hours
-                      </li>
-                      <li className="text-center">
-                        <h2 className="text-3xl font-bold text-center">:</h2>
-                      </li>
-                      <li className="px-2 text-center min-w-[70px] text-sm">
-                        <h2
-                          className="text-3xl font-bold  text-center"
-                          id="minutes"
-                        >
-                          {releaseTimer.minutes || 0}
-                        </h2>
-                        Minutes
-                      </li>
-                      <li className="text-center">
-                        <h2 className="text-3xl font-bold text-center">:</h2>
-                      </li>
-                      <li className="px-2 text-center min-w-[70px] text-sm ">
-                        <h2
-                          className="text-3xl font-bold text-center"
-                          id="seconds"
-                        >
-                          {releaseTimer.seconds || 0}
-                        </h2>
-                        Seconds
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <div></div>
+              
               </div>
             </div>
           </div>

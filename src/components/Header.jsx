@@ -1,25 +1,15 @@
 import React from 'react';
 import  { useState } from 'react';
 import { Link } from "react-router-dom";
-import { useMoralis } from "react-moralis";
-import { nodeName } from 'rsuite/esm/DOMHelper';
+
 function Header() {
 
-  const{
-    account,
-    authenticate,
-  } = useMoralis();
-
-  const [showSidebar, setShowSidebar] = useState(false);
   const [isActive, setActive] = useState("false");
   const handleToggle = () => {
     setActive(!isActive);
   };
 
-  const handleAuth = async() => {
-    await authenticate({'chainId' : 56, 'signingMessage' : 'Welcome to Pounder Protocol'})
-  }
-
+  
   return (
     <div className="Header">
       <div className="w-full text-white bg-[#232323] dark-mode:text-gray-200 dark-mode:bg-gray-800">
@@ -68,7 +58,7 @@ function Header() {
                 href="/#faqs"
               >
                 FAQ's
-              </a>
+                </a>
               <a
                 className="px-4 py-2 text-gray-300 hover:text-white text-sm font-medium"
                 href="https://discord.gg/4mTPwy9j4y" target="_blank"
@@ -96,25 +86,7 @@ function Header() {
               >
                 Open Dashboard
               </Link>
-              <button
-               onClick={handleAuth}
-               style = {{
-                 border: 'none',
-                 paddingRight: 13,
-                 paddingLeft: 13,
-                 paddingTop: 8,
-                 paddingBottom: 8,
-                 marginLeft: 8,
-                 borderRadius: 8,
-                 background: 'white',
-                 color: 'black',
-
-               }
-               }
-
-               >{account?
-                account.substring(0,6) + '...' + account.substring(account.length-3,account.length) 
-                : 'Connect Wallet'}</button>
+              
             </nav>
           </div>
         </div>
