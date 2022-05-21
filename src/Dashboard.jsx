@@ -7,6 +7,7 @@ import Swap from "./pages/Swap";
 import { ethers } from "ethers";
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from './utils/contractConfig';
 import { useMoralis} from 'react-moralis';
+import axios from "axios";
 
 // import Docs from "./pages/Docs";
 
@@ -197,10 +198,20 @@ const Tabs = ({ color, openTab, setOpenTab, handleTabClick }) => {
 
 function DashboardTab() {
 
+  const {
+    account,
+  } = useMoralis();
+
   const [now, setNow] = useState(0);
   const [totalSupply, setTotalSupply] = useState(0);
   const [rebase, setRebase] = useState(0);
+  const [poundPrice, setPoundprice] = useState(0);
+  const [marketCap, setMarketCap] = useState(0);
+  const [userBalance, setUserBalance] = useState(0);
+
+
   
+  //Set date for rebase time calculation
   useEffect(() => {
     const interval = setInterval(() => {
       setNow(Math.floor(Date.now()/1000))
@@ -209,17 +220,55 @@ function DashboardTab() {
     return () => clearInterval(interval);
   }, []);
 
+  //get PriceSpecs from Pancakeswap
+  useEffect(() => {
+    const interval = setInterval(async() => {
+      let tokenData = await axios.get('https://api.pancakeswap.info/api/v2/tokens/0xbC6246f22f5D6A883E5acCB69016655e1744393C');
+      let price = tokenData.data.data['price'];
+      setPoundprice(parseFloat(price));
+
+
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [poundPrice]);
+
+ //Sets next Rebase value
+  useEffect(() => {
+    const interval = setInterval(async() => {
+
+        const provider = new ethers.providers.JsonRpcProvider('https://speedy-nodes-nyc.moralis.io/fd883a5568037e2a20cb09de/bsc/mainnet');
+        const contract = new ethers.Contract(CONTRACT_ADDRESS,CONTRACT_ABI, provider);
+        const nextRebase = await contract.nextRebase();
+        let num = parseInt(nextRebase['_hex'], 16);
+        
+        setRebase(num);
+     
+    }, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(()=>{
+    async function getUserSpecs(){      
+      const provider = new ethers.providers.JsonRpcProvider('https://speedy-nodes-nyc.moralis.io/fd883a5568037e2a20cb09de/bsc/mainnet');
+      const contract = new ethers.Contract(CONTRACT_ADDRESS,CONTRACT_ABI, provider);
+      const balance = await contract.balanceOf(account);
+      setUserBalance(ethers.utils.formatEther(balance));
+      }
+
+      if(account) getUserSpecs()
+    
+  },[account])
+
+  
+
+  
   
   
   useEffect(() =>{
     async function getTotalSupply() {
       const provider = new ethers.providers.JsonRpcProvider('https://speedy-nodes-nyc.moralis.io/fd883a5568037e2a20cb09de/bsc/mainnet');
       const contract = new ethers.Contract(CONTRACT_ADDRESS,CONTRACT_ABI, provider);
-      const supply = await contract.totalSupply();
-      const nextRebase = await contract.nextRebase();
-      let num = parseInt(nextRebase['_hex'], 16);
-      
-      setRebase(num);
+      const supply = await contract.totalSupply();     
       setTotalSupply(ethers.utils.formatEther(supply));
 
     }
@@ -248,16 +297,16 @@ function DashboardTab() {
             <div className="grid sm:grid-cols-3 grid-cols-1 text-white gap-8">
               <div>
                 <h1 className="text-xl font-thin">Market Cap</h1>
-                <p className="font-bold text-lg">$ 0</p>
+                <p className="font-bold text-lg">$ {poundPrice * totalSupply}</p>
               </div>
               <div>
                 <h1 className="text-xl font-thin">POUND Price</h1>
-                <p className="font-bold text-lg">$ 0</p>
+                <p className="font-bold text-lg">$ {poundPrice.toFixed(6)}</p>
               </div>
               <div>
                 <h1 className="text-xl font-thin">Next Rebase</h1>
                 {rebase-now < 0? 
-                <p>00:00</p>
+                <p>Rebasing now...</p>
                 :
                 <p className="font-bold text-lg"> {Math.floor((rebase-now)/60)} : {(rebase-now)-(Math.floor((rebase-now)/60)*60)}</p>
                 }
@@ -268,11 +317,11 @@ function DashboardTab() {
               </div>
               <div>
                 <h1 className="text-xl font-thin">Backed Liquidity</h1>
-                <p className="font-bold text-lg">0 %</p>
+                <p className="font-bold text-lg">TBA %</p>
               </div>
               <div>
                 <h1 className="text-xl font-thin">Average POUND Holding</h1>
-                <p className="font-bold text-lg">$ 0</p>
+                <p className="font-bold text-lg">$TBA</p>
               </div>
             </div>
           </div>
@@ -328,29 +377,42 @@ function DashboardTab() {
               style={{ backgroundColor: "#222" }}
             >
               <div>
+
+                {account?
                 <div className="grid sm:grid-cols-3 grid-cols-1 gap-8">
+                  
+                  
                   <div>
                     <h1 className="text-xl font-thin">Your Balance</h1>
-                    <p className="font-bold text-lg">$ 0</p>
-                    <p className="text-xs font-thin">10.000,98 POUND</p>
+                    <p className="font-bold text-lg">$ {(userBalance * poundPrice).toFixed(6)}</p>
+                    <p className="text-xs font-thin"> {userBalance}POUND</p>
                   </div>
                   <div>
                     <h1 className="text-xl font-thin">Daily Earnings</h1>
-                    <p className="font-bold text-lg">$ 0</p>
-                    <p className="text-xs font-thin">10.000,98 POUND</p>
+                    <p className="font-bold text-lg">$ {((userBalance * poundPrice)* (1.0175)-(userBalance*poundPrice)).toFixed(6)}</p>
+                    <p className="text-xs font-thin">{(userBalance * (1.0175)- userBalance).toFixed(6)} POUND</p>
                   </div>
                   <div>
                     <h1 className="text-xl font-thin">Next Reward</h1>
                     <p className="font-bold text-lg">$ 0</p>
                     <p className="text-xs font-thin">10.000,98 POUND</p>
+                  </div>                  
                   </div>
+                  :
+                  <div>                    
+                    <div style={{justifyContent: "center", display:"flex"}}>
+                      <br/>
+                    <h2 style={{fontWeight:700}}>Connect to Metamask first</h2>
+                    </div>
+                    </div>
+                  }
+                    
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
   );
 }
 

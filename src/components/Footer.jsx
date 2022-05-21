@@ -1,6 +1,51 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { ethers } from 'ethers';
+import { CONTRACT_ABI, CONTRACT_ADDRESS} from '../utils/contractConfig'
+import axios from 'axios';
 
 function Footer() {
+
+  const [totalSupply, setTotalSupply] = useState(0);
+  const [circulatingSupply, setCirculatingSupply] = useState(0)
+  const [ poundPrice, setPoundprice ] = useState(0);
+  
+
+  useEffect(() =>{
+    async function getCirculatingSupply() {
+      const provider = new ethers.providers.JsonRpcProvider('https://speedy-nodes-nyc.moralis.io/fd883a5568037e2a20cb09de/bsc/mainnet');
+      const contract = new ethers.Contract(CONTRACT_ADDRESS,CONTRACT_ABI, provider);
+      const supply = await contract.getCirculatingSupply();     
+      setCirculatingSupply(ethers.utils.formatEther(supply));
+
+    }
+
+    getCirculatingSupply();  
+  },[circulatingSupply])
+
+  useEffect(() =>{
+    async function getTotalSupply() {
+      const provider = new ethers.providers.JsonRpcProvider('https://speedy-nodes-nyc.moralis.io/fd883a5568037e2a20cb09de/bsc/mainnet');
+      const contract = new ethers.Contract(CONTRACT_ADDRESS,CONTRACT_ABI, provider);
+      const supply = await contract.totalSupply();     
+      setTotalSupply(ethers.utils.formatEther(supply));
+
+    }
+
+    getTotalSupply();  
+  },[totalSupply])
+
+  useEffect(() => {
+    const interval = setInterval(async() => {
+      let tokenData = await axios.get('https://api.pancakeswap.info/api/v2/tokens/0xbC6246f22f5D6A883E5acCB69016655e1744393C');
+      let price = tokenData.data.data['price'];
+      setPoundprice(parseFloat(price));
+
+
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [poundPrice]);
+
+ 
   return (
     
 <div className="Footer">
@@ -18,16 +63,16 @@ function Footer() {
             <div className="text-sm leading-normal">
               <div className="flex text-white">
                 <div className="w-40">Total supply:</div>
-                <div>T.B.A.</div>
+                <div>{totalSupply}</div>
               </div>
               <div className="flex text-white">
                 <div className="w-40">Circulating supply:</div>
-                <div>T.B.A.</div>
+                <div>{circulatingSupply}.</div>
               </div>
               
               <div className="flex text-white">
                 <div className="w-40">Market Cap:</div>
-                <div>T.B.A.</div>
+                <div>{(totalSupply * poundPrice).toFixed(6)}</div>
               </div>
               <div className="bg-gradient-to-r from-[#6760CF] to-[#00CAA4] rounded-3xl mt-4 -mx-4 h-[1px] bg-opacity-20" />
               <div className="text-white pt-3">
