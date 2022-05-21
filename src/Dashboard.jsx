@@ -250,6 +250,18 @@ function DashboardTab() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(()=> {
+    async function getRebase(){
+      const provider = new ethers.providers.JsonRpcProvider('https://speedy-nodes-nyc.moralis.io/fd883a5568037e2a20cb09de/bsc/mainnet');
+      const contract = new ethers.Contract(CONTRACT_ADDRESS,CONTRACT_ABI, provider);
+      const nextRebase = await contract.nextRebase();
+      let num = parseInt(nextRebase['_hex'], 16);
+        
+        setRebase(num);
+    }
+    getRebase();
+  })
+
   useEffect(()=>{
     async function getUserSpecs(){      
       const provider = new ethers.providers.JsonRpcProvider('https://speedy-nodes-nyc.moralis.io/fd883a5568037e2a20cb09de/bsc/mainnet');
@@ -300,11 +312,11 @@ function DashboardTab() {
             <div className="grid sm:grid-cols-3 grid-cols-1 text-white gap-8">
               <div>
                 <h1 className="text-xl font-thin">Market Cap</h1>
-                <p className="font-bold text-lg">$ {poundPrice * totalSupply}</p>
+                <p className="font-bold text-lg">$ {(poundPrice * totalSupply).toFixed(2)}</p>
               </div>
               <div>
                 <h1 className="text-xl font-thin">POUND Price</h1>
-                <p className="font-bold text-lg">$ {poundPrice.toFixed(6)}</p>
+                <p className="font-bold text-lg">$ {poundPrice.toFixed(2)}</p>
               </div>
               <div>
                 <h1 className="text-xl font-thin">Next Rebase</h1>
@@ -316,7 +328,7 @@ function DashboardTab() {
               </div>
               <div>
                 <h1 className="text-xl font-thin">Circulating Supply</h1>
-                <p className="font-bold text-lg">{totalSupply}</p>
+                <p className="font-bold text-lg">{(parseFloat(totalSupply).toFixed(2))} POUND</p>
               </div>
               <div>
                 <h1 className="text-xl font-thin">Backed Liquidity</h1>
@@ -387,13 +399,13 @@ function DashboardTab() {
                   
                   <div>
                     <h1 className="text-xl font-thin">Your Balance</h1>
-                    <p className="font-bold text-lg">$ {(userBalance * poundPrice).toFixed(6)}</p>
+                    <p className="font-bold text-lg">$ {(userBalance * poundPrice).toFixed(2)}</p>
                     <p className="text-xs font-thin"> {userBalance}POUND</p>
                   </div>
                   <div>
                     <h1 className="text-xl font-thin">Daily Earnings</h1>
                     <p className="font-bold text-lg">$ {((userBalance * poundPrice)* (1.0175)-(userBalance*poundPrice)).toFixed(6)}</p>
-                    <p className="text-xs font-thin">{(userBalance * (1.0175)- userBalance).toFixed(6)} POUND</p>
+                    <p className="text-xs font-thin">{(userBalance * (1.0175)- userBalance).toFixed(2)} POUND</p>
                   </div>
                   <div>
                     <h1 className="text-xl font-thin">Next Reward</h1>
