@@ -32,6 +32,7 @@ const FAQs = [
   {
     heading: 'Where can I buy $POUND tokens?',
     content: 'The $POUND token is available on PancakeSwap. Click here to buy',
+    link: 'https://pancakeswap.finance/swap?outputCurrency=0xbC6246f22f5D6A883E5acCB69016655e1744393C'
   },
   {
     heading: 'How is the APY Sustained?',
@@ -296,7 +297,7 @@ function Home() {
       {/* how does it work */}
       <div className="container mx-auto lg:my-20 my-10 xl:px-0 px-4">
         <h2 className="text-4xl font-bold text-center mb-2 font-apercubold">
-          How does is work?
+          How does this work?
         </h2>
         <p className="text-center text-xl pb-20">
           A remarkable AutoStaking System
@@ -410,7 +411,12 @@ function Home() {
                   <AccordionItemHeading>
                     <AccordionItemButton>{item.heading}</AccordionItemButton>
                   </AccordionItemHeading>
+                  {item.link?
+                  <AccordionItemPanel><a href={item.link}>{item.content}</a></AccordionItemPanel>
+                  :
                   <AccordionItemPanel>{item.content}</AccordionItemPanel>
+
+                  }
                 </AccordionItem>
               ))}
             </Accordion>
