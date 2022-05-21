@@ -72,7 +72,7 @@ function Footer() {
               
               <div className="flex text-white">
                 <div className="w-40">Market Cap:</div>
-                <div>{(totalSupply * poundPrice).toFixed(6)}</div>
+                <div>${(totalSupply * poundPrice).toFixed(6)}</div>
               </div>
               <div className="bg-gradient-to-r from-[#6760CF] to-[#00CAA4] rounded-3xl mt-4 -mx-4 h-[1px] bg-opacity-20" />
               <div className="text-white pt-3">
