@@ -397,8 +397,8 @@ function DashboardTab() {
                   </div>
                   <div>
                     <h1 className="text-xl font-thin">Next Reward</h1>
-                    <p className="font-bold text-lg">$ 0</p>
-                    <p className="text-xs font-thin">10.000,98 POUND</p>
+                    <p className="font-bold text-lg">${(userBalance * poundPrice * 1.0003615) - (userBalance*poundPrice)}</p>
+                    <p className="text-xs font-thin">{(userBalance * 1.0003615) - userBalance} POUND</p>
                   </div>                  
                   </div>
                   :

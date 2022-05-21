@@ -1,28 +1,58 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // import Slider from "rsuite/Slider";
 // import "rsuite/dist/rsuite.min.css";
 import "rc-slider/assets/index.css";
 import TooltipSlider from "../components/TooltipSlider";
 import axios from "axios";
+import { useMoralis } from "react-moralis";
+import { ethers } from "ethers";
+import { CONTRACT_ABI, CONTRACT_ADDRESS} from '../utils/contractConfig'
 // const Slider = require("rc-slider");
 
 // const SliderWithTooltip = Slider.createSliderWithTooltip;
 // const Range = createSliderWithTooltip(Slider.Range);
 const Calculator = () => {
+
+  const { account } = useMoralis();
+
   const [price, setPrice] = useState(28);
   const [userBalance, setUserbalance] = useState(0);
   const [userTokenInput, setUserTokenInput] =useState(0);
   const [poundAtEntry, setPoundAtEntry] = useState(0);
+  const [livePrice, setLivePrice] = useState(0);
  
   
   const setCurrentPrice = async() =>{
-    console.log('clicked')
     let tokenData = await axios.get('https://api.pancakeswap.info/api/v2/tokens/0xbC6246f22f5D6A883E5acCB69016655e1744393C');
     let price = tokenData.data.data['price'];
-    console.log(parseFloat(price))
 
       setPoundAtEntry(parseFloat(price));
+      setLivePrice(parseFloat(price));
   }
+
+  useEffect(()=>{
+    async function getUserSpecs(){      
+      const provider = new ethers.providers.JsonRpcProvider('https://speedy-nodes-nyc.moralis.io/fd883a5568037e2a20cb09de/bsc/mainnet');
+      const contract = new ethers.Contract(CONTRACT_ADDRESS,CONTRACT_ABI, provider);
+      const balance = await contract.balanceOf(account);           
+      setUserbalance(ethers.utils.formatEther(balance));
+      }
+
+      if(account) getUserSpecs()
+    
+  },[account])
+
+  useEffect(()=>{
+    async function fetchPrice(){
+      let tokenData = await axios.get('https://api.pancakeswap.info/api/v2/tokens/0xbC6246f22f5D6A883E5acCB69016655e1744393C');
+      let price = tokenData.data.data['price'];
+      setLivePrice(parseFloat(price)); 
+      }
+
+      fetchPrice();
+  },[livePrice])
+
+  
 
 
   const handlePoundChange = (e) =>{
@@ -49,7 +79,7 @@ const Calculator = () => {
           <div className="grid md:grid-cols-3 grid-cols-1 text-white md:mb-10 mb-5">
             <div className="text-center md:block flex items-center justify-between">
               <h4 className="font-light text-base">POUND Price</h4>
-              <h2 className="font-bold text-2xl">$ 0</h2>
+              <h2 className="font-bold text-2xl">${livePrice.toFixed(6)}</h2>
             </div>
             <div className="text-center md:block flex items-center justify-between">
               <h4 className="font-light text-base">APY</h4>
@@ -126,7 +156,7 @@ const Calculator = () => {
               <p className="font-medium text-base text-left">
                 Current Portfolio Value
               </p>
-              <p className="font-medium text-base text-right">$ 0,00</p>
+              <p className="font-medium text-base text-right">{account? '$'+(livePrice * userBalance).toFixed(5) : "connect to Metamask first"}</p>
             </div>
             <div className=" md:col-span-2 col-span-1 md:mb-0 mb-2 flex justify-between items-center text-white">
               <p className="font-medium text-base text-left">
