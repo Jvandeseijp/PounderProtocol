@@ -227,8 +227,8 @@ function DashboardTab() {
       let price = tokenData.data.data['price'];
       setPoundprice(parseFloat(price));
        
-     let holderdata = await axios.get('https://api.covalenthq.com/v1/56/tokens/0xbC6246f22f5D6A883E5acCB69016655e1744393C/token_holders/?key=ckey_ed58fe8520dc494898eb322921d');
-     console.log(holderdata.data)
+     //let holderdata = await axios.get('https://api.covalenthq.com/v1/56/tokens/0xbC6246f22f5D6A883E5acCB69016655e1744393C/token_holders/?key=ckey_ed58fe8520dc494898eb322921d');
+     //console.log(holderdata.data.data)
 
 
     }, 10000);

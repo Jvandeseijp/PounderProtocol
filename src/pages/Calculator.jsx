@@ -1,19 +1,29 @@
 import React, { useState } from "react";
 // import Slider from "rsuite/Slider";
 // import "rsuite/dist/rsuite.min.css";
-import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import TooltipSlider from "../components/TooltipSlider";
+import axios from "axios";
 // const Slider = require("rc-slider");
 
 // const SliderWithTooltip = Slider.createSliderWithTooltip;
 // const Range = createSliderWithTooltip(Slider.Range);
 const Calculator = () => {
   const [price, setPrice] = useState(28);
-  const [apy, setApy] = useState(1.75);
   const [userBalance, setUserbalance] = useState(0);
   const [userTokenInput, setUserTokenInput] =useState(0);
   const [poundAtEntry, setPoundAtEntry] = useState(0);
+ 
+  
+  const setCurrentPrice = async() =>{
+    console.log('clicked')
+    let tokenData = await axios.get('https://api.pancakeswap.info/api/v2/tokens/0xbC6246f22f5D6A883E5acCB69016655e1744393C');
+    let price = tokenData.data.data['price'];
+    console.log(parseFloat(price))
+
+      setPoundAtEntry(parseFloat(price));
+  }
+
 
   const handlePoundChange = (e) =>{
     console.log(e.target.value);
@@ -83,7 +93,7 @@ const Calculator = () => {
                   value = {poundAtEntry}
                   onChange = {handlePoundChange}
                 />
-                <button className="py-2 px-3 text-sm font-bold absolute top-1/2 -translate-y-1/2 right-4">
+                <button className="py-2 px-3 text-sm font-bold absolute top-1/2 -translate-y-1/2 right-4" onClick={setCurrentPrice}>
                   Current
                 </button>
               </div>
