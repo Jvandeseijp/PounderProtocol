@@ -38,7 +38,6 @@ function Footer() {
     const interval = setInterval(async() => {
       let tokenData = await axios.get('https://api.pancakeswap.info/api/v2/tokens/0xbC6246f22f5D6A883E5acCB69016655e1744393C');
       let price = tokenData.data.data['price'];
-      console.log(price);
       setPoundprice(parseFloat(price));
 
 
