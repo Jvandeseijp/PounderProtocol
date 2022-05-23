@@ -68,7 +68,7 @@ function Footer() {
               </div>
               <div className="flex text-white">
                 <div className="w-40">Circulating supply:</div>
-                <div>{parseFloat(circulatingSupply).toFixed(2)}.</div>
+                <div>{parseFloat(circulatingSupply).toFixed(2)}</div>
               </div>
               
               <div className="flex text-white">

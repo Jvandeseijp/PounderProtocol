@@ -75,10 +75,11 @@ const Tabs = ({ color, openTab, setOpenTab, handleTabClick }) => {
       <div className="flex flex-wrap">
         <div className="w-full">
           <ul
+          style={{'display':'flex !important'}}
             className="max-w-3xl mx-auto flex mb-0 list-none  pt-3 pb-4 px-3 flex-row justify-between md:px-10"
             role="tablist"
           >
-            <li className="-mb-px mr-2 last:mr-0 min-w-[150px] text-center">
+            <li className="-mb-px mr-2 last:mr-0  text-center">
               <button
                 className={
                   "text-xs font-bold uppercase px-5 py-3 shadow-lg rounded-full border border-white border-opacity-50 block leading-normal w-full " +
@@ -95,7 +96,7 @@ const Tabs = ({ color, openTab, setOpenTab, handleTabClick }) => {
                 Dashboard
               </button>
             </li>
-            <li className="-mb-px mr-2 last:mr-0 min-w-[150px] text-center">
+            <li className="-mb-px mr-2 last:mr-0 text-center">
               <button
                 className={
                   "text-xs font-bold uppercase px-5 py-3 shadow-lg rounded-full border border-white border-opacity-50 block leading-normal w-full " +
@@ -112,7 +113,7 @@ const Tabs = ({ color, openTab, setOpenTab, handleTabClick }) => {
                 Swap
               </button>
             </li>
-            <li className="-mb-px mr-2 last:mr-0 min-w-[150px] text-center">
+            <li className="-mb-px mr-2 last:mr-0 text-center">
               <button
                 className={
                   "text-xs font-bold uppercase px-5 py-3 shadow-lg rounded-full border border-white border-opacity-50 block leading-normal w-full " +
@@ -130,7 +131,7 @@ const Tabs = ({ color, openTab, setOpenTab, handleTabClick }) => {
               </button>
               </li>           
            
-            <li className="-mb-px mr-2 last:mr-0 min-w-[150px] text-center">
+            <li className="-mb-px mr-2 last:mr-0 text-center">
               <a href="https://pounder-protocol.gitbook.io/docs/" target="_blank"
                 className={
                   "hover:text-white hover:no-underline text-xs font-bold uppercase px-5 py-3 shadow-lg rounded-full border border-white border-opacity-50 block leading-normal w-full " +
@@ -206,10 +207,46 @@ function DashboardTab() {
   const [totalSupply, setTotalSupply] = useState(0);
   const [rebase, setRebase] = useState(0);
   const [poundPrice, setPoundprice] = useState(0);
-  const [marketCap, setMarketCap] = useState(0);
   const [userBalance, setUserBalance] = useState(0);
 
+  useEffect(()=> {
+    async function getRebase(){
+      const provider = new ethers.providers.JsonRpcProvider('https://speedy-nodes-nyc.moralis.io/fd883a5568037e2a20cb09de/bsc/mainnet');
+      const contract = new ethers.Contract(CONTRACT_ADDRESS,CONTRACT_ABI, provider);
+      const nextRebase = await contract.nextRebase();
+      let num = parseInt(nextRebase['_hex'], 16);
+        
+        setRebase(num);
+    }
+    getRebase();
+  })
 
+  
+  
+  useEffect(() =>{
+    async function getTotalSupply() {
+      const provider = new ethers.providers.JsonRpcProvider('https://speedy-nodes-nyc.moralis.io/fd883a5568037e2a20cb09de/bsc/mainnet');
+      const contract = new ethers.Contract(CONTRACT_ADDRESS,CONTRACT_ABI, provider);
+      const supply = await contract.totalSupply();    
+      console.log(supply) 
+      setTotalSupply(ethers.utils.formatEther(supply));
+
+    }
+
+    getTotalSupply();  
+  },[totalSupply])
+
+  useEffect(()=>{
+    async function getUserSpecs(){      
+      const provider = new ethers.providers.JsonRpcProvider('https://speedy-nodes-nyc.moralis.io/fd883a5568037e2a20cb09de/bsc/mainnet');
+      const contract = new ethers.Contract(CONTRACT_ADDRESS,CONTRACT_ABI, provider);
+      const balance = await contract.balanceOf(account);
+      setUserBalance(ethers.utils.formatEther(balance));
+      }
+
+      if(account) getUserSpecs()
+    
+  },[account])
   
   //Set date for rebase time calculation
   useEffect(() => {
@@ -250,46 +287,7 @@ function DashboardTab() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(()=> {
-    async function getRebase(){
-      const provider = new ethers.providers.JsonRpcProvider('https://speedy-nodes-nyc.moralis.io/fd883a5568037e2a20cb09de/bsc/mainnet');
-      const contract = new ethers.Contract(CONTRACT_ADDRESS,CONTRACT_ABI, provider);
-      const nextRebase = await contract.nextRebase();
-      let num = parseInt(nextRebase['_hex'], 16);
-        
-        setRebase(num);
-    }
-    getRebase();
-  })
-
-  useEffect(()=>{
-    async function getUserSpecs(){      
-      const provider = new ethers.providers.JsonRpcProvider('https://speedy-nodes-nyc.moralis.io/fd883a5568037e2a20cb09de/bsc/mainnet');
-      const contract = new ethers.Contract(CONTRACT_ADDRESS,CONTRACT_ABI, provider);
-      const balance = await contract.balanceOf(account);
-      setUserBalance(ethers.utils.formatEther(balance));
-      }
-
-      if(account) getUserSpecs()
-    
-  },[account])
-
   
-
-  
-  
-  
-  useEffect(() =>{
-    async function getTotalSupply() {
-      const provider = new ethers.providers.JsonRpcProvider('https://speedy-nodes-nyc.moralis.io/fd883a5568037e2a20cb09de/bsc/mainnet');
-      const contract = new ethers.Contract(CONTRACT_ADDRESS,CONTRACT_ABI, provider);
-      const supply = await contract.totalSupply();     
-      setTotalSupply(ethers.utils.formatEther(supply));
-
-    }
-
-    getTotalSupply();  
-  },[totalSupply])
 
  
   return (
@@ -312,11 +310,11 @@ function DashboardTab() {
             <div className="grid sm:grid-cols-3 grid-cols-1 text-white gap-8">
               <div>
                 <h1 className="text-xl font-thin">Market Cap</h1>
-                <p className="font-bold text-lg">$ {(poundPrice * totalSupply).toFixed(2)}</p>
+                <p className="font-bold text-lg">$ {poundPrice?  (poundPrice * totalSupply).toFixed(2) : 'Getting data...'}</p>
               </div>
               <div>
                 <h1 className="text-xl font-thin">POUND Price</h1>
-                <p className="font-bold text-lg">$ {poundPrice.toFixed(2)}</p>
+                <p className="font-bold text-lg">$ { poundPrice? poundPrice.toFixed(2) : 'Getting data...'}</p>
               </div>
               <div>
                 <h1 className="text-xl font-thin">Next Rebase</h1>
