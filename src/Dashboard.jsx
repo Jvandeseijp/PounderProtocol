@@ -228,7 +228,7 @@ function DashboardTab() {
       const provider = new ethers.providers.JsonRpcProvider('https://speedy-nodes-nyc.moralis.io/fd883a5568037e2a20cb09de/bsc/mainnet');
       const contract = new ethers.Contract(CONTRACT_ADDRESS,CONTRACT_ABI, provider);
       const supply = await contract.totalSupply();    
-      console.log(supply) 
+        console.log(supply) 
       setTotalSupply(ethers.utils.formatEther(supply));
 
     }
@@ -310,11 +310,11 @@ function DashboardTab() {
             <div className="grid sm:grid-cols-3 grid-cols-1 text-white gap-8">
               <div>
                 <h1 className="text-xl font-thin">Market Cap</h1>
-                <p className="font-bold text-lg">$ {poundPrice?  (poundPrice * totalSupply).toFixed(2) : 'Getting data...'}</p>
+                <p className="font-bold text-lg"> {poundPrice?   new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(poundPrice * totalSupply  )  : 'Getting data...'}</p>
               </div>
               <div>
                 <h1 className="text-xl font-thin">POUND Price</h1>
-                <p className="font-bold text-lg">$ { poundPrice? poundPrice.toFixed(2) : 'Getting data...'}</p>
+                <p className="font-bold text-lg"> { poundPrice? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(poundPrice) : 'Getting data...'}</p>
               </div>
               <div>
                 <h1 className="text-xl font-thin">Next Rebase</h1>
@@ -326,7 +326,7 @@ function DashboardTab() {
               </div>
               <div>
                 <h1 className="text-xl font-thin">Circulating Supply</h1>
-                <p className="font-bold text-lg">{(parseFloat(totalSupply).toFixed(2))} POUND</p>
+                <p className="font-bold text-lg">{new Intl.NumberFormat().format(parseFloat(totalSupply))} POUND</p>
               </div>
               <div>
                 <h1 className="text-xl font-thin">Backed Liquidity</h1>
@@ -397,18 +397,18 @@ function DashboardTab() {
                   
                   <div>
                     <h1 className="text-xl font-thin">Your Balance</h1>
-                    <p className="font-bold text-lg">$ {(userBalance * poundPrice).toFixed(2)}</p>
-                    <p className="text-xs font-thin"> {userBalance}POUND</p>
+                    <p className="font-bold text-lg">{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(userBalance * poundPrice)}</p>
+                    <p className="text-xs font-thin"> {new Intl.NumberFormat().format(userBalance)}POUND</p>
                   </div>
                   <div>
                     <h1 className="text-xl font-thin">Daily Earnings</h1>
-                    <p className="font-bold text-lg">$ {((userBalance * poundPrice)* (1.0175)-(userBalance*poundPrice)).toFixed(6)}</p>
-                    <p className="text-xs font-thin">{(userBalance * (1.0175)- userBalance).toFixed(2)} POUND</p>
+                    <p className="font-bold text-lg"> {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format((userBalance * poundPrice)* (1.0175)-(userBalance*poundPrice))}</p>
+                    <p className="text-xs font-thin">{ new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(userBalance * (1.0175)- userBalance)} POUND</p>
                   </div>
                   <div>
                     <h1 className="text-xl font-thin">Next Reward</h1>
-                    <p className="font-bold text-lg">${(userBalance * poundPrice * 1.0003615) - (userBalance*poundPrice)}</p>
-                    <p className="text-xs font-thin">{(userBalance * 1.0003615) - userBalance} POUND</p>
+                    <p className="font-bold text-lg">${((userBalance * poundPrice * 1.0003615) - (userBalance*poundPrice)).toFixed(4)}</p>
+                    <p className="text-xs font-thin">{((userBalance * 1.0003615) - userBalance).toFixed(4)} POUND</p>
                   </div>                  
                   </div>
                   :

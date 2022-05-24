@@ -56,12 +56,10 @@ const Calculator = () => {
 
 
   const handlePoundChange = (e) =>{
-    console.log(e.target.value);
     setPoundAtEntry(e.target.value);
   }
   
   const handleInputChange = (e)=> {
-    console.log(e.target.value);
     setUserTokenInput(e.target.value);
   }
 

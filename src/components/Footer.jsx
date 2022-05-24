@@ -63,16 +63,16 @@ function Footer() {
             <div className="text-sm leading-normal">
               <div className="flex text-white">
                 <div className="w-40">Total supply:</div>
-                <div>{parseFloat(totalSupply).toFixed(2)}</div>
+                <div>{new Intl.NumberFormat().format(parseFloat(totalSupply))}</div>
               </div>
               <div className="flex text-white">
                 <div className="w-40">Circulating supply:</div>
-                <div>{parseFloat(circulatingSupply).toFixed(2)}</div>
+                <div>{new Intl.NumberFormat().format(parseFloat(circulatingSupply))}</div>
               </div>
               
               <div className="flex text-white">
                 <div className="w-40">Market Cap:</div>
-                <div>${(parseFloat(totalSupply) * poundPrice).toFixed(2)}</div>
+                <div>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(parseFloat(totalSupply) * poundPrice)}</div>
               </div>
               <div className="bg-gradient-to-r from-[#6760CF] to-[#00CAA4] rounded-3xl mt-4 -mx-4 h-[1px] bg-opacity-20" />
               <div className="text-white pt-3">
