@@ -368,20 +368,7 @@ function DashboardTab() {
                   <p>1.50M $POUND</p>
                 </div> */}
               </div>
-              {/* <div className="mb-10">
-                <h3 className="text-xl font-bold text-white my-2 md:my-4 text-left">
-                  Your Current Tax Bracket
-                </h3>
-
-                <div className="justify-between flex mb-1">
-                  <p className="font-thin">Sell Tier 1 (+0%)</p>
-                  <p>Total Sell Tax= 20%</p>
-                </div>
-                <div className="justify-between flex mb-1">
-                  <p className="font-thin">Transfer Tier 1 (+0%)</p>
-                  <p>Total Transfer Tax= 13%</p>
-                </div>
-              </div> */}
+              
             </div>
             <div
               className="lg:col-span-8 border border-gray-200 p-4 lg:p-12 rounded-2xl text-center"
