@@ -9,6 +9,7 @@ import { CONTRACT_ADDRESS, CONTRACT_ABI } from "./utils/contractConfig";
 import { useMoralis } from "react-moralis";
 import axios from "axios";
 import Staking from "./pages/Staking";
+import { WBNB_CONTRACT, WBNB_ABI } from "./utils/WBNBconfig";
 
 // import Docs from "./pages/Docs";
 
@@ -17,7 +18,9 @@ function Dashboard() {
   let navigate = useNavigate();
   const [openTab, setOpenTab] = useState(1);
 
+
   useEffect(() => {
+    
     if (location.pathname.includes("dashboard")) {
       setOpenTab(1);
     } else if (location.pathname.includes("swap")) {
@@ -127,22 +130,6 @@ const Tabs = ({ color, openTab, setOpenTab, handleTabClick }) => {
                 Calculator
               </button>
             </li>
-
-            <li className="-mb-px mr-2 last:mr-0 text-center">
-              <a
-                href="https://pounder-protocol.gitbook.io/docs/"
-                target="_blank"
-                className={
-                  "hover:text-white hover:no-underline text-xs font-bold uppercase px-5 py-3 shadow-lg rounded-full border border-white border-opacity-50 block leading-normal w-full " +
-                  (openTab === 5 ? "text-white " + color : "text-white")
-                }
-                data-toggle="tab"
-                // href="#link5"
-                role="tablist"
-              >
-                Docs
-              </a>
-            </li>
             <li className="-mb-px mr-2 last:mr-0  text-center">
               <button
                 className={
@@ -160,7 +147,24 @@ const Tabs = ({ color, openTab, setOpenTab, handleTabClick }) => {
                 Staking
               </button>
             </li>
-            <li className="-mb-px mr-2 last:mr-0 min-w-[150px] text-center">
+
+            <li className="-mb-px mr-2 last:mr-0 text-center">
+              <a
+                href="https://pounder-protocol.gitbook.io/docs/"
+                target="_blank"
+                className={
+                  "hover:text-white hover:no-underline text-xs font-bold uppercase px-5 py-3 shadow-lg rounded-full border border-white border-opacity-50 block leading-normal w-full " +
+                  (openTab === 5 ? "text-white " + color : "text-white")
+                }
+                data-toggle="tab"
+                // href="#link5"
+                role="tablist"
+              >
+                Docs
+              </a>
+            </li>
+            
+            {/*<li className="-mb-px mr-2 last:mr-0 min-w-[150px] text-center">
               <button
                 onClick={handleAuth}
                 style={{
@@ -181,7 +185,7 @@ const Tabs = ({ color, openTab, setOpenTab, handleTabClick }) => {
                     account.substring(account.length - 3, account.length)
                   : "Connect Wallet"}
               </button>
-            </li>
+                </li>*/}
           </ul>
           <div className="relative flex flex-col min-w-0 w-full">
             <div className="px-4 py-5 flex-auto">
@@ -221,6 +225,9 @@ function DashboardTab() {
   const [rebase, setRebase] = useState(0);
   const [poundPrice, setPoundprice] = useState(0);
   const [userBalance, setUserBalance] = useState(0);
+  const [wbnbBalance, setWbnbBalance] = useState(0);
+  const [bnbPrice, setBnbPrice] = useState(0);
+
 
   useEffect(() => {
     async function getRebase() {
@@ -239,6 +246,35 @@ function DashboardTab() {
     }
     getRebase();
   });
+
+  useEffect(()=>{
+    async function getwBNBLiq(){
+      const provider = new ethers.providers.JsonRpcProvider(
+        "https://speedy-nodes-nyc.moralis.io/fd883a5568037e2a20cb09de/bsc/mainnet"
+      );
+      const contract = new ethers.Contract(
+        WBNB_CONTRACT,
+        WBNB_ABI,
+        provider
+      )
+
+      const liquidity = await contract.balanceOf('0x2b3a2E45672851F79A86ac8c4211f709E13eAfe4');
+      console.log(`liquidity :  ${liquidity}`);
+      setWbnbBalance(ethers.utils.formatEther(liquidity));
+
+    }
+
+     getwBNBLiq();
+  },[wbnbBalance])
+
+  useEffect(() =>{
+    async function getWBNBprice() {
+      const bnbPrice = await axios.get('https://www.binance.com/api/v3/ticker/price?symbol=BNBUSDT');
+      setBnbPrice(parseFloat(bnbPrice.data['price']));
+    }
+
+    getWBNBprice();
+  },[])
 
   useEffect(() => {
     async function getTotalSupply() {
@@ -286,9 +322,12 @@ function DashboardTab() {
   //get PriceSpecs from Pancakeswap
   useEffect(() => {
     const interval = setInterval(async () => {
+
       let tokenData = await axios.get(
         "https://api.pancakeswap.info/api/v2/tokens/0xbC6246f22f5D6A883E5acCB69016655e1744393C"
       );
+
+      
       let price = tokenData.data.data["price"];
       setPoundprice(parseFloat(price));
 
@@ -380,7 +419,10 @@ function DashboardTab() {
               </div>
               <div>
                 <h1 className="text-xl font-thin">Backed Liquidity</h1>
-                <p className="font-bold text-lg">TBA %</p>
+                <p className="font-bold text-lg">{new Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "USD",
+                      }).format(bnbPrice * wbnbBalance)}</p>
               </div>
               <div>
                 <h1 className="text-xl font-thin">Average POUND Holding</h1>

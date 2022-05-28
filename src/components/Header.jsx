@@ -1,13 +1,36 @@
 import React from 'react';
-import  { useState } from 'react';
+import  { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
+import {useMoralis} from "react-moralis";
 
 function Header() {
 
   const [isActive, setActive] = useState("false");
+  const [path, setPath] = useState(window.location.pathname);
+
+  const dashPaths = ['/calculator','/swap','/staking','/dashboard'];
+
+  useEffect(()=>{
+    setInterval(()=>{
+      
+      setPath(window.location.pathname);      
+    
+  },1000)
+    
+  },[])
+
+
   const handleToggle = () => {
     setActive(!isActive);
   };
+
+
+
+  const {account, authenticate} = useMoralis();
+
+  const handleAuth = async() => {
+    await authenticate({chainId: 56})
+  }
 
   
   return (
@@ -46,6 +69,8 @@ function Header() {
                 </svg>
               </button>
             </div>
+           {!dashPaths.includes(path)?
+
             <nav className={isActive ? "flex-col flex-grow pb-4 md:pb-0 hidden md:flex md:justify-end md:flex-row md:pr-0 pr-3" : "flex-col flex-grow pb-4 md:pb-0 flex md:flex md:justify-end md:flex-row  pr-3"}>
               <a
                 className="px-4 py-2 text-gray-300 hover:text-white text-sm font-medium"
@@ -76,6 +101,7 @@ function Header() {
                   <img src="/images/audit-btn-text.svg" className='w-[80px] mx-auto' />
                 </div>
               </a>
+              
               <Link
                 to="/dashboard"
                 className="text-white hover:text-white hover:no-underline hover:scale-105 transition transform duration-500 text-sm font-medium rounded-full px-4 py-2 ml-4 border border-white max-w-[150px]"
@@ -86,8 +112,51 @@ function Header() {
               >
                 Open Dashboard
               </Link>
+             
               
             </nav>
+
+            :
+            <nav className={isActive ? "flex-col flex-grow pb-4 md:pb-0 hidden md:flex md:justify-end md:flex-row md:pr-0 pr-3" : "flex-col flex-grow pb-4 md:pb-0 flex md:flex md:justify-end md:flex-row  pr-3"}>
+              <a
+                className="px-4 py-2 text-gray-300 hover:text-white text-sm font-medium"
+                href="https://pounder-protocol.gitbook.io/docs/" target="_blank"
+              >
+                Documentation
+              </a>
+              <a
+                className="px-4 py-2 text-gray-300 hover:text-white text-sm font-medium"
+                href="/#faqs"
+              >
+                FAQ's
+                </a>
+              <a
+                className="px-4 py-2 text-gray-300 hover:text-white text-sm font-medium"
+                href="https://discord.gg/4mTPwy9j4y" target="_blank"
+              >
+                Discord
+              </a>
+              <a
+                className="px-4 py-2 text-gray-300 hover:text-white text-sm font-medium"
+                href="https://t.me/PounderProtocol" target="_blank"
+              >
+                Telegram
+              </a>
+              <a style={{cursor:'pointer'}}
+              onClick={handleAuth} className="p-[1px] max-w-[150px] text-center bg-gradient-to-r from-[#6760CF] to-[#00CAA4] rounded-full bg-opacity-20 ml-4 md:mb-0 mb-3">
+                <div className='px-5 py-1 rounded-3xl'>
+                  {account? 
+                  account.substring(0, 6) + "..." + account.substring(account.length - 3, account.length) 
+                    : 
+                    'Connect Wallet'}
+                </div>
+              </a>
+              
+             
+             
+              
+            </nav>
+            }
           </div>
         </div>
       </div>

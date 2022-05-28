@@ -14,10 +14,17 @@ const Staking = () => {
   const [lockedPounds, setLockedPounds] = useState(0);
   const [rewardsPounds, setRewardsPounds] = useState(0);
   const [price, setPrice] = useState (0)
+  const [currentUser, setCurrentUser] = useState({
+        'depositAmount':0,
+        'reWardsAmount':0,
+        'releasTimestamp': 0,
+        'isTwoYearLocked': false
+  })
 
 
   useEffect(() => {
-    async function fetchPrice() {
+   
+      async function fetchPrice() {
       let tokenData = await axios.get(
         "https://api.pancakeswap.info/api/v2/tokens/0xbC6246f22f5D6A883E5acCB69016655e1744393C"
       );
@@ -41,6 +48,7 @@ const Staking = () => {
       );
       const balance = await contract.balanceOf(account);
       setUserBalance(ethers.utils.formatEther(balance));
+      
     }
 
     if (account) getUserSpecs();
@@ -58,10 +66,26 @@ const Staking = () => {
         provider
       );
       const balance = await contract.depositStructs(account);
+      console.table(
+        {
+          'depositAmount':ethers.utils.formatEther(balance['depositAmount']),
+          'reWardsAmount':ethers.utils.formatEther(balance['returnAmount']),
+          'releasTimestamp': ethers.BigNumber.from(balance['releasTimestamp']),
+          'isTwoYearLocked': balance['isTwoYearLocked']
+          
+        }
+      )
       
       if(balance){
       setLockedPounds(ethers.utils.formatEther(balance['depositAmount']));
       setRewardsPounds(ethers.utils.formatEther(balance['returnAmount']));
+      setCurrentUser({
+        'depositAmount':ethers.utils.formatEther(balance['depositAmount']),
+        'reWardsAmount':ethers.utils.formatEther(balance['returnAmount']),
+        'releasTimestamp': ethers.BigNumber.from(balance['releasTimestamp']),
+        'isTwoYearLocked': balance['isTwoYearLocked']
+        
+      })
     }
     }
 
@@ -126,11 +150,11 @@ const Staking = () => {
                   <div className="mb-2">
                     <div className="flex justify-between ">
                       <p className="text-[14px] ">Lock for 12 months:</p>
-                      <p className="text-[14px] ">112.284,46 % APY</p>
+                      <p className="text-[14px] ">168.426 % APY</p>
                     </div>
                     <div className="flex justify-between ">
                       <p className="text-[14px] ">Lock for 24 months:</p>
-                      <p className="text-[14px]">224.568,92 %APY</p>
+                      <p className="text-[14px]">421.066 % APY</p>
                     </div>
                   </div>
                   <div className="flex">
@@ -162,7 +186,18 @@ const Staking = () => {
                       ""
                       }
                     </div>
-                    <button className="self-center mb-8 bg-PeacockGreen px-5 font-bold text-xs py-1  border border-white rounded-lg">
+                    <button style={{
+                   background:"linear-gradient(90deg, #992BD4 0%, #00CAA4 99.94%, #00CAA4 100.01%)",
+                   paddingTop: '0.9rem',
+                   paddingBottom: '0.9rem',
+                   paddingRight: '1.0rem',
+                   paddingLeft: '1.0rem',
+                   maxWidth: '150px',
+                   borderRadius: 22,
+                   fontSize: 13,
+                   
+                }}
+                className="self-center mb-8 bg-PeacockGreen px-5 font-bold text-xs py-1  border border-white rounded-lg">
                       Submit
                     </button>
                   </div>
@@ -197,8 +232,8 @@ const Staking = () => {
                       }).format(lockedPounds * price)}</p>
                   </div>
                   <p style={{marginTop:10}} className="text-[12px]">
-                    Lock until: Fri Jan 27 2023 14:02:35
-                  </p>
+                    Locked untill: {Date(parseInt(currentUser['releasTimestamp'], 16))}
+                    </p>
                 </div>
                 <div className="flex flex-col">
                   <div className="border mt-2 border-white rounded-lg py-1 px-2">
@@ -212,7 +247,19 @@ const Staking = () => {
                   <p className="text-[12px]">
                     {/*Lock until: Fri Jan 27 2023 14:02:35*/}
                   </p>
-                  <button className=" rounded-xl w-fit text-white px-2 py-1 self-center mt-5 border-white border bg-PeacockGreen font-bold text-[10px]">
+                  <button className=" rounded-xl w-fit text-white px-2 py-1 self-center mt-5 border-white border bg-PeacockGreen font-bold text-[10px]"
+                  style={{
+                    background:"linear-gradient(90deg, #992BD4 0%, #00CAA4 99.94%, #00CAA4 100.01%)",
+                    paddingTop: '1.0rem',
+                    paddingBottom: '1.0rem',
+                    paddingRight: '1.0rem',
+                    paddingLeft: '1.0rem',
+                    maxWidth: '150px',
+                    borderRadius: 22,
+                    fontSize: 13
+
+                
+                  }}>
                     Claim Rewards
                   </button>
                   <div className="mt-16">

@@ -19,6 +19,7 @@ const Calculator = () => {
   const [userTokenInput, setUserTokenInput] = useState(0);
   const [poundAtEntry, setPoundAtEntry] = useState(0);
   const [livePrice, setLivePrice] = useState(0);
+  
 
   const setCurrentPrice = async () => {
     let tokenData = await axios.get(
@@ -89,7 +90,7 @@ const Calculator = () => {
             </div>
             <div className="text-center md:block flex items-center justify-between">
               <h4 className="font-light text-base">Your Balance</h4>
-              <h2 className="font-bold text-2xl">{userBalance}</h2>
+              <h2 className="font-bold text-2xl">{parseFloat(userBalance).toFixed(2)} POUND</h2>
             </div>
           </div>
 
