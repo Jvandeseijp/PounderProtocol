@@ -1,15 +1,15 @@
 module.exports = {
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
-      colors:{
-        bluePurple: '#6760CF',
-        PeacockGreen: '#00CAA4'
-
-      }
+      colors: {
+        bluePurple: "#6760CF",
+        PeacockGreen: "#00CAA4",
+      },
+      fontFamily: {
+        Montserrat: ["Montserrat", "sans-serif"],
+      },
     },
   },
   plugins: [],
-}
+};
