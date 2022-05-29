@@ -265,15 +265,14 @@ const Staking = () => {
                   <div className="mt-16">
                     <div className="flex justify-between text-[12px]">
                       <p>Current APY:</p>
-                      <p>280.711,15 %</p>
+                      <p>{currentUser['isTwoYearLocked']? '168.426' : '421.066'}%</p>
                     </div>
                     <div className="flex justify-between text-[12px]">
-                      <p>Daily ROI:</p>
-                      <p>3,50 %</p>
+                      
                     </div>
                     <div className="flex justify-between text-[12px]">
                       <p>Claimable:</p>
-                      <p>6.954,50 POUND</p>
+                      <p>{rewardsPounds} POUND</p>
                     </div>
                   </div>
                 </div>
