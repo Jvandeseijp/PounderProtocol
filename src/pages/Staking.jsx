@@ -4,6 +4,7 @@ import { ethers } from "ethers";
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from "../utils/contractConfig";
 import { STAKING_ADDRES, STAKING_ABI } from "../utils/stakingconfig";
 import axios from "axios";
+import { wait } from "@testing-library/user-event/dist/utils";
 
 const Staking = () => {
 
@@ -20,6 +21,7 @@ const Staking = () => {
         'releasTimestamp': 0,
         'isTwoYearLocked': false
   })
+  const[btnState, setBtnState] = useState(false);
 
 
   useEffect(() => {
@@ -131,6 +133,35 @@ const Staking = () => {
     event.preventDefault();
 
   }
+  const handleApprove = async(event) => {
+
+    const sendOptions = {
+      contractAddress: CONTRACT_ADDRESS,
+      functionName: 'approve',
+      abi: CONTRACT_ABI,
+      params: {
+        spender: STAKING_ADDRES,
+        value: Moralis.Units.ETH(tokenStakeAmount)
+      },
+    };
+    try{
+      Moralis.executeFunction(sendOptions)
+      setTimeout(()=>{
+        setBtnState(true);
+
+      },15000)
+       
+
+    }
+    
+    catch(e){
+      console.log(e);
+    }
+    
+
+    event.preventDefault();
+
+  }
 
   return (
     <div className="grid grid-cols-12 w-full  text-white">
@@ -144,7 +175,7 @@ const Staking = () => {
           </div>
           <div className="grid grid-cols-2 justify-items-center w-full ">
             <div style={{borderWidth: 2, borderRadius: 5}}>
-              <form style={{backgroundColor:'rgb(32 32 32)'}} className="p-3" onSubmit={handleSubmit}>
+              <form style={{backgroundColor:'rgb(32 32 32)'}} className="p-3" onSubmit={!btnState? handleApprove : handleSubmit}>
                 <div>
                   <h2 style={{fontSize:22}} className="mb-2 font-bold">Locking period</h2>
                   <div className="mb-2">
@@ -198,7 +229,7 @@ const Staking = () => {
                    
                 }}
                 className="self-center mb-8 bg-PeacockGreen px-5 font-bold text-xs py-1  border border-white rounded-lg">
-                      Submit
+                      {!btnState? 'Approve' : 'Submit'}
                     </button>
                   </div>
                   <div>
@@ -247,7 +278,7 @@ const Staking = () => {
                   <p className="text-[12px]">
                     {/*Lock until: Fri Jan 27 2023 14:02:35*/}
                   </p>
-                  <button className=" rounded-xl w-fit text-white px-2 py-1 self-center mt-5 border-white border bg-PeacockGreen font-bold text-[10px]"
+                  <button disabled='true' className=" rounded-xl w-fit text-white px-2 py-1 self-center mt-5 border-white border bg-PeacockGreen font-bold text-[10px]"
                   style={{
                     background:"linear-gradient(90deg, #992BD4 0%, #00CAA4 99.94%, #00CAA4 100.01%)",
                     paddingTop: '1.0rem',
