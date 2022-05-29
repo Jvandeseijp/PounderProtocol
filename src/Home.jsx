@@ -51,6 +51,7 @@ function Home() {
     minutes: 0,
     seconds: 0,
   });
+
   
   const timerInstance = useRef(null);
 
@@ -136,6 +137,7 @@ function Home() {
                   Thanks to Our Unique Rebase Algorithm.
 
                 </p>
+                <img className="mt-6 mb-10 " src="/images/herobanner.png"></img>
                 <div className="inline-flex md:w-auto w-full">
                   <a
                     className="md:w-[180px] w-1/2 text-white hover:scale-105 transition transform duration-500 text-base font-medium rounded-full h-[56px] flex items-center justify-center border-white border"
