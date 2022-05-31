@@ -4,7 +4,6 @@ import { ethers } from "ethers";
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from "../utils/contractConfig";
 import { STAKING_ADDRES, STAKING_ABI } from "../utils/stakingconfig";
 import axios from "axios";
-import { wait } from "@testing-library/user-event/dist/utils";
 
 const Staking = () => {
 
@@ -167,15 +166,15 @@ const Staking = () => {
     <div className="grid grid-cols-12 w-full  text-white">
       <div className="col-span-12 ">
         <div className="flex flex-col justify-center">
-          <div className="text-3xl mt-2 self  font-bold">
-            Lock your tokens and get a Higher APY
+          <div className="text-3xl mt-2 self  justify-center font-bold">
+            <h2 style={{textAlign: 'center', fontSize: '36px'}}>Lock your tokens and get a Higher APY</h2>
           </div>
-          <div className="flex justify-center text-sm mb-6  font-Montserrat font-thin">
+          <div style={{marginTop:'10px'}} className="flex justify-center text-sm mb-6  font-Montserrat font-thin">
             The longer you stake, the more you earn!
           </div>
           <div className="grid grid-cols-2 justify-items-center w-full ">
-            <div style={{borderWidth: 2, borderRadius: 5}}>
-              <form style={{backgroundColor:'rgb(32 32 32)'}} className="p-3" onSubmit={!btnState? handleApprove : handleSubmit}>
+            <div >
+              <form style={{backgroundColor:'rgb(32 32 32)', borderWidth:'1px', borderRadius: 15}} className="p-3" onSubmit={!btnState? handleApprove : handleSubmit}>
                 <div>
                   <h2 style={{fontSize:22}} className="mb-2 font-bold">Locking period</h2>
                   <div className="mb-2">
@@ -246,7 +245,7 @@ const Staking = () => {
             <div style={{borderWidth: 2, borderRadius: 5}} className="border bg-black border-white w-full rounded-lg ml-5">
              
              {account?
-              <form style={{backgroundColor:'rgb(32 32 32)'}}className="p-3 ">
+              <form style={{backgroundColor:'rgb(32 32 32)', borderWidth:'1px', borderRadius: 15}}className="p-3 ">
                 <div>
 
                   <div>
