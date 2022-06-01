@@ -8,12 +8,14 @@ import axios from "axios";
 const Staking = () => {
 
   const {account, Moralis} =useMoralis();
-  const [stakeDuration, setStakeDuration] = useState(0);
-  const [tokenStakeAmount, setTokenStakeAmount] = useState(0);
+  const [stakeDuration, setStakeDuration] = useState(12);
+  const [tokenStakeAmount, setTokenStakeAmount] = useState(1000);
   const [userBalance, setUserBalance] = useState(0);
   const [lockedPounds, setLockedPounds] = useState(0);
   const [rewardsPounds, setRewardsPounds] = useState(0);
-  const [price, setPrice] = useState (0)
+  const [price, setPrice] = useState (0);
+  const [userAllowance, setUserAllowance] = useState(0);
+
   const [currentUser, setCurrentUser] = useState({
         'depositAmount':0,
         'reWardsAmount':0,
@@ -48,6 +50,11 @@ const Staking = () => {
         provider
       );
       const balance = await contract.balanceOf(account);
+      const allowance = await contract.allowance(account, STAKING_ADDRES);
+      setUserAllowance(allowance);
+      console.log('allowance')
+      console.log(allowance);
+
       setUserBalance(ethers.utils.formatEther(balance));
       
     }
@@ -204,6 +211,10 @@ const Staking = () => {
                     <div className="mb-10">
                       <h2 className="mb-1 font-bold" style={{fontSize:22}}>Token Amount</h2>
                       <input
+                        type="number"
+                        min="1000"
+                        max="25000"
+                        
                         className="px-3 py-1 w-3/4   text-xs rounded-2xl mx-2 mb-1 "
                         placeholder="Token Amount"
                         value={tokenStakeAmount}                        
@@ -242,10 +253,17 @@ const Staking = () => {
                 </div>
               </form>
             </div>
-            <div style={{borderWidth: 2, borderRadius: 5}} className="border bg-black border-white w-full rounded-lg ml-5">
+            <div className="border bg-black border-white w-full rounded-lg ml-5">
              
-             {account?
-              <form style={{backgroundColor:'rgb(32 32 32)', borderWidth:'1px', borderRadius: 15}}className="p-3 ">
+             <form className="p-3 ">
+               {!account?
+               <h3 style={{
+                 justifyContent: 'center',
+                 display:'flex',
+                 marginTop: '40px'
+               }}>Connect To Metamask First!</h3>
+               : 
+               <div>
                 <div>
 
                   <div>
@@ -306,12 +324,10 @@ const Staking = () => {
                     </div>
                   </div>
                 </div>
+                </div>}
+
               </form>
-              :
-              <div style={{'display':'flex', 'justifyContent':'center', 'marginTop':'40%'}}>
-              <h2>Connect to Metamask first</h2>
-              </div>
-              }
+              
             </div>
           </div>
         </div>
