@@ -49,12 +49,12 @@ const Staking = () => {
         CONTRACT_ABI,
         provider
       );
-      const balance = await contract.balanceOf(account);
-      const allowance = await contract.allowance(account, STAKING_ADDRES);
-      setUserAllowance(allowance);
-      console.log('allowance')
-      console.log(allowance);
+      
+      const [balance, allowance]  = [await contract.balanceOf(account), await contract.allowance(account, STAKING_ADDRES)];
 
+        
+      setUserAllowance(parseFloat(ethers.utils.formatEther(allowance)));
+      
       setUserBalance(ethers.utils.formatEther(balance));
       
     }
@@ -73,16 +73,7 @@ const Staking = () => {
         STAKING_ABI,
         provider
       );
-      const balance = await contract.depositStructs(account);
-      console.table(
-        {
-          'depositAmount':ethers.utils.formatEther(balance['depositAmount']),
-          'reWardsAmount':ethers.utils.formatEther(balance['returnAmount']),
-          'releasTimestamp': ethers.BigNumber.from(balance['releasTimestamp']),
-          'isTwoYearLocked': balance['isTwoYearLocked']
-          
-        }
-      )
+      const balance = await contract.depositStructs(account);      
       
       if(balance){
       setLockedPounds(ethers.utils.formatEther(balance['depositAmount']));
@@ -125,11 +116,8 @@ const Staking = () => {
       },
     };
     try{
-      const transaction = Moralis.executeFunction(sendOptions);
-      console.log(transaction.hash);
-
-      await transaction.wait()
-
+      await Moralis.executeFunction(sendOptions);
+      
 
     }catch(e){
       console.log(e)
@@ -139,7 +127,18 @@ const Staking = () => {
     event.preventDefault();
 
   }
-  const handleApprove = async(event) => {
+  const handleApprove = async() => {
+
+    const readOptions = {
+      contractAddress : CONTRACT_ADDRESS,
+      functionName: 'allowance',
+      abi: CONTRACT_ABI,
+      params: {
+        owner_: account,
+        spender: STAKING_ADDRES,
+      }
+
+    }
 
     const sendOptions = {
       contractAddress: CONTRACT_ADDRESS,
@@ -151,22 +150,27 @@ const Staking = () => {
       },
     };
     try{
-      Moralis.executeFunction(sendOptions)
+      
+      console.log('................ ')
+      console.log(userAllowance);
+      const tx = await Moralis.executeFunction(sendOptions);
+      tx.wait(5) 
       setTimeout(()=>{
-        setBtnState(true);
+        console.log(`new amount: ${tokenStakeAmount}`);
+        setUserAllowance(tokenStakeAmount);
 
-      },15000)
-       
-
-    }
+      },12000)
+      
+           
+      
+      }
     
     catch(e){
       console.log(e);
     }
     
 
-    event.preventDefault();
-
+    console.log('close')
   }
 
   return (
@@ -181,7 +185,8 @@ const Staking = () => {
           </div>
           <div className="grid grid-cols-2 justify-items-center w-full ">
             <div >
-              <form style={{backgroundColor:'rgb(32 32 32)', borderWidth:'1px', borderRadius: 15}} className="p-3" onSubmit={!btnState? handleApprove : handleSubmit}>
+              <form style={{backgroundColor:'rgb(32 32 32)', borderWidth:'1px', borderRadius: 15}} className="p-3" 
+              >
                 <div>
                   <h2 style={{fontSize:22}} className="mb-2 font-bold">Locking period</h2>
                   <div className="mb-2">
@@ -227,7 +232,10 @@ const Staking = () => {
                       ""
                       }
                     </div>
-                    <button style={{
+                    <button 
+                  type="button"
+                  onClick={handleApprove}
+                  style={{
                    background:"linear-gradient(90deg, #992BD4 0%, #00CAA4 99.94%, #00CAA4 100.01%)",
                    paddingTop: '0.9rem',
                    paddingBottom: '0.9rem',
@@ -236,10 +244,34 @@ const Staking = () => {
                    maxWidth: '150px',
                    borderRadius: 22,
                    fontSize: 13,
+                   display: userAllowance < tokenStakeAmount?"inline-block" : "none",
+                  
+
                    
                 }}
                 className="self-center mb-8 bg-PeacockGreen px-5 font-bold text-xs py-1  border border-white rounded-lg">
-                      {!btnState? 'Approve' : 'Submit'}
+                      Approve
+                    </button>
+                    <button 
+                    type="button"
+                    onClick={handleSubmit}
+
+                    style={{
+                   background:"linear-gradient(90deg, #992BD4 0%, #00CAA4 99.94%, #00CAA4 100.01%)",
+                   paddingTop: '0.9rem',
+                   paddingBottom: '0.9rem',
+                   paddingRight: '1.0rem',
+                   paddingLeft: '1.0rem',
+                   maxWidth: '150px',
+                   minWidth: '85px',
+                   borderRadius: 22,
+                   fontSize: 13,
+                   display:  userAllowance >= tokenStakeAmount ? "inline-block": "none",
+                   
+                   
+                }}
+                className="self-center mb-8 bg-PeacockGreen px-5 font-bold text-xs py-1  border border-white rounded-lg">
+                      Stake
                     </button>
                   </div>
                   <div>
@@ -295,7 +327,8 @@ const Staking = () => {
                   <p className="text-[12px]">
                     {/*Lock until: Fri Jan 27 2023 14:02:35*/}
                   </p>
-                  <button disabled='true' className=" rounded-xl w-fit text-white px-2 py-1 self-center mt-5 border-white border bg-PeacockGreen font-bold text-[10px]"
+                  <button disabled={true} className=" rounded-xl w-fit text-white px-2 py-1 self-center mt-5 border-white border bg-PeacockGreen font-bold text-[10px]"
+                  type="button"
                   style={{
                     background:"linear-gradient(90deg, #992BD4 0%, #00CAA4 99.94%, #00CAA4 100.01%)",
                     paddingTop: '1.0rem',
