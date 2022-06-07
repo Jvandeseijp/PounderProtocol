@@ -256,7 +256,7 @@ const Staking = () => {
             </div>
             <div className="border bg-[#171717] border-white w-full rounded-2xl px-8 py-6">
               <form className=" h-full">
-                {account ? (
+                {!account ? (
                   <h3
                     style={{
                       justifyContent: "center",
