@@ -91,6 +91,9 @@ const Staking = () => {
   };
 
   const handleStakeAmountChange = (e) => {
+    console.log('...........Debug allowance.........')
+    console.log(e.target.value);
+    console.log(userAllowance);
     setTokenStakeAmount(e.target.value);
   };
 
@@ -116,6 +119,7 @@ const Staking = () => {
     event.preventDefault();
   };
   const handleApprove = async () => {
+    console.log('clicked approve')
     const readOptions = {
       contractAddress: CONTRACT_ADDRESS,
       functionName: "allowance",
@@ -187,6 +191,7 @@ const Staking = () => {
                     <div>
                       <input
                         type="radio"
+                        defaultChecked={true}
                         name="duration"
                         value="12"
                         onClick={handleRadioSelect}
@@ -234,15 +239,29 @@ const Staking = () => {
 
                   <div class="mt-auto pt-10">
                     <button
-                      disabled={true}
+                      onClick={handleApprove}
                       className=" rounded-full w-fit text-white px-3  py-3 self-center  border-white border mx-auto block font-bold cursor-pointer mb-20 min-w-[160px]"
                       type="button"
                       style={{
+                        display:userAllowance<tokenStakeAmount?'block':'none',
                         background:
                           "linear-gradient(90deg, #992BD4 0%, #00CAA4 99.94%, #00CAA4 100.01%)",
                       }}
                     >
-                      Submit
+                      Approve
+                    </button>
+                    <button
+                      className=" rounded-full w-fit text-white px-3  py-3 self-center  border-white border mx-auto block font-bold cursor-pointer mb-20 min-w-[160px]"
+                      onClick={handleSubmit}
+                      type="button"
+                      style={{
+                        display:userAllowance>=tokenStakeAmount?'block':'none',
+
+                        background:
+                          "linear-gradient(90deg, #992BD4 0%, #00CAA4 99.94%, #00CAA4 100.01%)",
+                      }}
+                    >
+                      Stake
                     </button>
                     <ul className=" ml-6 list-disc text-[12px] ">
                       <li className="">
